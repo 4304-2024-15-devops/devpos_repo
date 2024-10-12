@@ -44,6 +44,10 @@ def authenticate(token: str):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized"
         )
+# health
+@prefix_router.get("/ping")
+def ping():
+    return "pong"
 
 
 # Create a blacklist email
@@ -103,10 +107,6 @@ def reset(db: Session = Depends(get_db)):
     return schemas.DeleteResponse()
 
 
-# health
-@prefix_router.get("/ping")
-def ping():
-    return "pong"
 
 
 app.include_router(prefix_router)
