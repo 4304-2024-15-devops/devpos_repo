@@ -116,4 +116,4 @@ def test_create_blacklisted_email_invalid_auth(client: TestClient, valid_body: d
         headers={"Authorization": "Bearer invalid_token"},
         json=valid_body,
     )
-    assert response.status_code == 200, response.text
+    assert response.status_code == 401, response.text
