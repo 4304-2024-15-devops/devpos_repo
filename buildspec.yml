@@ -21,7 +21,7 @@ artifacts:
   files:
     - '**/*'
   name: blacklist-app
-  discard-paths: yesgit push
+  discard-paths: yes
 
 cache:
   paths:
