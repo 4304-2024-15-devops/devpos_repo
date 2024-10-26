@@ -20,7 +20,7 @@ phases:
 artifacts:
   files:
     - '**/*'
-  name: blacklist-app
+  name: blacklist-app-$CODEBUILD_BUILD_NUMBER
   discard-paths: yes
 
 cache:
