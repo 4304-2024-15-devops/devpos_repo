@@ -20,7 +20,8 @@ phases:
 artifacts:
   files:
     - '**/*'
-  discard-paths: yes
+  name: blacklist-app
+  discard-paths: yesgit push
 
 cache:
   paths:
