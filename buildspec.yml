@@ -10,9 +10,13 @@ phases:
       - pipenv install
   pre_build:
     commands:
+      - echo "Running pre-build commands..."
+      - pipenv install --dev
+  build:
+    commands:
       - echo "Execute unit test..."
       - pipenv run pytest --cov=. -v -s --cov-fail-under=70 --junitxml=report.xml
-  build:
+  post_build:
     commands:
       - echo "Packaging the application ..."
       - zip -r blacklist-app-${CODEBUILD_BUILD_NUMBER}.zip . -x "*.git*" "*.pytest_cache*" "*.coverage*" "*__pycache__*" "*.env*" "*.venv*" "*.idea*" "*.vs*"
@@ -20,7 +24,7 @@ phases:
 artifacts:
   files:
     - '**/*.zip'
-    - '**/*.xml'
+    - report.xml
   discard-paths: yes
 
 cache:
