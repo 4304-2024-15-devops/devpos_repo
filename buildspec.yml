@@ -5,22 +5,22 @@ phases:
     runtime-versions:
       python: 3.12
     commands:
+      - echo "Installing dependencies..."
       - pip install pipenv
-      - echo Installing dependencies...
       - pipenv install
   pre_build:
     commands:
-      - echo Running pre-build commands...
-      - pipenv install --dev
-  post_build:
+      - echo "Execute unit test..."
+      - pipenv run pytest --cov=. -v -s --cov-fail-under=70 --junitxml=report.xml
+  build:
     commands:
-      - echo Running post-build commands...
-      - pipenv run pytest --cov=. -v -s --cov-fail-under=70
+      - echo "Packaging the application ..."
+      - zip -r blacklist-app-${CODEBUILD_BUILD_NUMBER}.zip . -x "*.git*" "*.pytest_cache*" "*.coverage*" "*__pycache__*" "*.env*" "*.venv*" "*.idea*" "*.vs*"
 
 artifacts:
   files:
-    - '**/*'
-  name: blacklist-app-$CODEBUILD_BUILD_NUMBER
+    - '**/*.zip'
+    - '**/*.xml'
   discard-paths: yes
 
 cache:
