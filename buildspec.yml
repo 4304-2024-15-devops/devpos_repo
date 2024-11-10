@@ -1,0 +1,54 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - echo "Installing dependencies..."
+      - pip install pipenv
+      - pipenv install
+  pre_build:
+    commands:
+      - echo "Running pre-build commands..."
+      - pipenv install --dev
+      - echo "Login to ECR..."
+      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 585008076834.dkr.ecr.us-east-2.amazonaws.com
+  build:
+    on-failure: ABORT
+    commands:
+      - echo "Execute unit test..."
+      - pipenv run pytest --cov=. -v -s --cov-fail-under=70 --cov-report=html --cov-report=xml --junitxml=report.xml
+      - echo "Building the Docker image..."
+      - docker build -t black_list .
+      - echo "Tagging the Docker image..."
+      - docker tag black_list:latest 585008076834.dkr.ecr.us-east-2.amazonaws.com/black_list:latest
+  post_build:
+    commands:
+      - echo "Packaging the application and coverage report..."
+      - zip -r blacklist-app-${CODEBUILD_BUILD_NUMBER}.zip . -x "*.git*" "*.pytest_cache*" "*.coverage*" "*__pycache__*" "*.env*" "*.venv*" "*.idea*" "*.vs*" "*htmlcov*"
+      - zip -r coverage-report-${CODEBUILD_BUILD_NUMBER}.zip htmlcov/
+      - echo "Pushing the Docker image to ECR..."
+      - docker push 585008076834.dkr.ecr.us-east-2.amazonaws.com/black_list:latest
+      - printf '[{"name":"Container-app-blacklist","imageUri":"585008076834.dkr.ecr.us-east-2.amazonaws.com/black_list:latest"}]' > imagedefinitions-cd.json
+      - printf '{"ImageURI":"585008076834.dkr.ecr.us-east-2.amazonaws.com/black_list:latest"}' > imageDetail-cd.json
+      - cat imagedefinitions-cd.json
+artifacts:
+  files:
+    - '**/*-${CODEBUILD_BUILD_NUMBER}.zip'
+    - report.xml
+    - coverage.xml
+    - imagedefinitions-cd.json
+    - imageDetail-cd.json
+  discard-paths: yes
+  secondary-artifacts:
+    DefinitionArtifact:
+      files:
+        - appspec-cd.json
+        - taskdef-cd.json
+    ImageArtifact:
+      files:
+        - imageDetail-cd.json
+cache:
+  paths:
+    - '/root/.cache/pip/**/*'
