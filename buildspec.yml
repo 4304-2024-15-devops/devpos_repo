@@ -26,7 +26,7 @@ phases:
   post_build:
     commands:
       - echo "Packaging the application and coverage report..."
-      - zip -r blacklist-app-${CODEBUILD_BUILD_NUMBER}.zip . -x "*.git*" "*.pytest_cache*" "*.coverage*" "*__pycache__*" "*.env*" "*.venv*" "*.idea*" "*.vs*" "*htmlcov*"
+      - zip -r blacklist-app-${CODEBUILD_BUILD_NUMBER}.zip . -x "*.git*" "*.pytest_cache*" "*.coverage*" "*__pycache__*" "*.env*" "*.venv*" "*.idea*" "*.vs*" "*htmlcov*" "*.json"
       - zip -r coverage-report-${CODEBUILD_BUILD_NUMBER}.zip htmlcov/
       - echo "Pushing the Docker image to ECR..."
       - docker push 585008076834.dkr.ecr.us-east-2.amazonaws.com/black_list:latest
