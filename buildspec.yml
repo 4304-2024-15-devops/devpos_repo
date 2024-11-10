@@ -30,25 +30,25 @@ phases:
       - zip -r coverage-report-${CODEBUILD_BUILD_NUMBER}.zip htmlcov/
       - echo "Pushing the Docker image to ECR..."
       - docker push 585008076834.dkr.ecr.us-east-2.amazonaws.com/black_list:latest
-      - printf '[{"name":"Container-app-blacklist","imageUri":"585008076834.dkr.ecr.us-east-2.amazonaws.com/black_list:latest"}]' > imagedefinitions-cd.json
-      - printf '{"ImageURI":"585008076834.dkr.ecr.us-east-2.amazonaws.com/black_list:latest"}' > imageDetail-cd.json
-      - cat imagedefinitions-cd.json
+      - printf '[{"name":"Container-app-blacklist","imageUri":"585008076834.dkr.ecr.us-east-2.amazonaws.com/black_list:latest"}]' > imagedefinitions.json
+      - printf '{"ImageURI":"585008076834.dkr.ecr.us-east-2.amazonaws.com/black_list:latest"}' > imageDetail.json
+      - cat imagedefinitions.json
 artifacts:
   files:
     - '**/*-${CODEBUILD_BUILD_NUMBER}.zip'
     - report.xml
     - coverage.xml
-    - imagedefinitions-cd.json
-    - imageDetail-cd.json
+    - imagedefinitions.json
+    - imageDetail.json
   discard-paths: yes
   secondary-artifacts:
     DefinitionArtifact:
       files:
-        - appspec-cd.json
-        - taskdef-cd.json
+        - appspec.json
+        - taskdef.json
     ImageArtifact:
       files:
-        - imageDetail-cd.json
+        - imageDetail.json
 cache:
   paths:
     - '/root/.cache/pip/**/*'
