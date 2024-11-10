@@ -13,7 +13,13 @@
       ],
       "image": "<IMAGE1_NAME>",
       "essential": true,
-      "name": "Container-app-blacklist"
+      "name": "Container-app-blacklist",
+      "environmentFiles": [
+        {
+          "value": "arn:aws:s3:::blacklist-app-files/prod_env.env",
+          "type": "s3"
+        }
+      ]
     }
   ],
   "requiresCompatibilities": [
