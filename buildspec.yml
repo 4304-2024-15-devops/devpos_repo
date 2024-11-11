@@ -39,8 +39,6 @@ artifacts:
     - '**/*.json'
     - report.xml
     - coverage.xml
-    - imagedefinitions.json
-    - imageDetail.json
   discard-paths: yes
   secondary-artifacts:
     DefinitionArtifact:
