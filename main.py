@@ -37,14 +37,13 @@ def get_db():
 
 # Validate the token
 def authenticate(token: str):
-    # if not token or not token.startswith("Bearer "):
-    #     return False
-    # token = token.split(" ")[1]
-    # if token != config.BEARER_TOKEN:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized"
-    #     )
-    pass
+    if not token or not token.startswith("Bearer "):
+        return False
+    token = token.split(" ")[1]
+    if token != config.BEARER_TOKEN:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized"
+        )
 # health
 @prefix_router.get("/ping")
 def ping():
