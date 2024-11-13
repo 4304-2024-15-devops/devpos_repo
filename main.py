@@ -47,7 +47,8 @@ def authenticate(token: str):
 # health
 @prefix_router.get("/ping")
 def ping():
-    return "pong"
+    raise HTTPException(status_code=500, detail="Internal Server Error")
+    # return "pong"
 
 
 # Create a blacklist email
