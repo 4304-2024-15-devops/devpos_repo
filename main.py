@@ -47,6 +47,7 @@ def authenticate(token: str):
 # health
 @prefix_router.get("/ping")
 def ping():
+    raise HTTPException(status_code=500, detail="Internal Server Error")
     return "pong"
 
 
