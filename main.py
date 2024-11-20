@@ -1,7 +1,6 @@
 # Main application
 from typing import Dict, Annotated, Optional
-import uuid
-import hashlib
+import sys
 
 from fastapi import (
     Depends,
@@ -26,6 +25,11 @@ app = FastAPI()
 prefix_router = APIRouter(prefix="/blacklists")
 
 
+if "unittest" not in sys.modules.keys():
+    # Iint the database
+    import db_init
+
+
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -44,6 +48,8 @@ def authenticate(token: str):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized"
         )
+
+
 # health
 @prefix_router.get("/ping")
 def ping():
@@ -105,8 +111,6 @@ def reset(db: Session = Depends(get_db)):
     models.Base.metadata.create_all(bind=db.get_bind())
     db.commit()
     return schemas.DeleteResponse()
-
-
 
 
 app.include_router(prefix_router)

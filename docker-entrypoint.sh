@@ -1,5 +1,6 @@
 #!/bin/sh
 
-python3 db_init.py
+newrelic-admin run-program 
+# python3 db_init.py
 
 exec "$@"
