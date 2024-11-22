@@ -6,6 +6,7 @@ from fastapi import (
     Depends,
     FastAPI,
     APIRouter,
+    Query,
     Request,
     Response,
     status,
@@ -50,6 +51,10 @@ def authenticate(token: str):
         )
 
 
+def fail_with_exception(detail: str):
+    raise Exception(detail)
+
+
 # health
 @prefix_router.get("/ping")
 def ping():
@@ -64,8 +69,11 @@ def create_blacklist_email(
     db: Session = Depends(get_db),
     authorization: Annotated[Optional[str], Header()] = None,
     request: Request = None,
+    raise_exception: str = Query(None),
 ):
     authenticate(authorization)
+    if raise_exception:
+        fail_with_exception("Blacklist email creation failed")
     try:
         blacklist_email = schemas.CreateBlacklistEmail(**blacklist_email)
     except PydanticValidationError as e:
@@ -93,8 +101,11 @@ def check_blacklist_email(
     email: str,
     db: Session = Depends(get_db),
     authorization: Annotated[Optional[str], Header()] = None,
+    raise_exception: str = Query(None),
 ):
     authenticate(authorization)
+    if raise_exception:
+        fail_with_exception("Blacklist email search failed")
     email_blacklisted = crud.get_blacklisted_email(db, email=email)
     return {
         "is_blacklisted": True if email_blacklisted else False,
